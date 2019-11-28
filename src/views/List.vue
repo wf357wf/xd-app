@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div class="list">
     <van-nav-bar
       title="标题"
       left-text="返回"
@@ -38,7 +38,7 @@
 import store from '@/store'
 import { Button, SwipeCell, Rate, Cell, CellGroup, Icon, Dialog, NavBar, Toast } from 'vant'
 export default {
-  name: 'about',
+  name: 'list',
   store,
   components: {
     [Button.name]: Button,
@@ -89,6 +89,7 @@ export default {
     },
     onClickLeft () {
       Toast('返回')
+      this.$router.go(-1)
     },
     onClickRight () {
       Toast('按钮')
@@ -97,7 +98,7 @@ export default {
 }
 </script>
 <style scoped>
-.about {
+.list {
   background-color: #eee;
 }
 .swipe {
