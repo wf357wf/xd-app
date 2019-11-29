@@ -45,7 +45,7 @@ export default {
       this.$router.push('/List')
     },
     onLucky () {
-      this.$router.push('/List')
+      this.$router.push('/Lucky')
     },
     onMore () {
       Toast('更多功能敬请期待')
@@ -73,7 +73,7 @@ export default {
 .menu {
   width: 80%;
   height: 150px;
-  background-color: #ebebeb;
+  background-color: #e6fff4;
   border-radius: 10px;
 }
 .icon {

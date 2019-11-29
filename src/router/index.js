@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import List from '../views/List.vue'
 import ListAdd from '../views/ListAdd.vue'
-
+import Lucky from '../views/Lucky.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -21,6 +21,11 @@ const routes = [
     path: '/listadd',
     name: 'listadd',
     component: ListAdd
+  },
+  {
+    path: '/lucky',
+    name: 'lucky',
+    component: Lucky
   }
 ]
 
