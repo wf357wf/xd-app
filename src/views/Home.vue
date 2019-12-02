@@ -1,25 +1,33 @@
 <template>
   <div class="home">
-    <img class="logo" src="../assets/logo.png">
+    <img class="logo"
+         src="../assets/logo.png">
     <div class="menuBox">
       <div class="menu">
         <van-divider :style="{ color: '#42b983', borderColor: '#42b983', padding: '0 16px' }">薪动平台</van-divider>
-        <van-row type="flex" justify="space-around">
-          <van-col span="6" @click="onList()">
+        <van-row type="flex"
+                 justify="space-around">
+          <van-col span="6"
+                   @click="onList()">
             <div class="btn-item">
-              <img src="../assets/img/icon-2.png" class="icon">
+              <img src="../assets/img/icon-2.png"
+                   class="icon">
               <p class="text-item">代理分销</p>
             </div>
           </van-col>
-          <van-col span="6" @click="onLucky()">
+          <van-col span="6"
+                   @click="onLucky()">
             <div class="btn-item">
-              <img src="../assets/img/icon-3.png" class="icon">
+              <img src="../assets/img/icon-3.png"
+                   class="icon">
               <p class="text-item">幸运转盘</p>
             </div>
           </van-col>
-          <van-col span="6" @click="onMore()">
+          <van-col span="6"
+                   @click="onMore()">
             <div class="btn-item">
-              <img src="../assets/img/icon-1.png" class="icon">
+              <img src="../assets/img/icon-1.png"
+                   class="icon">
               <p class="text-item">敬请期待</p>
             </div>
           </van-col>
@@ -31,6 +39,7 @@
 
 <script>
 import { Button, Toast, Row, Col, Divider } from 'vant'
+import System from '../server/system'
 export default {
   name: 'home',
   components: {
@@ -39,6 +48,14 @@ export default {
     [Row.name]: Row,
     [Col.name]: Col,
     [Divider.name]: Divider
+  },
+  data () {
+    return {
+      Filter: {}
+    }
+  },
+  created () {
+    this.init()
   },
   methods: {
     onList () {
@@ -49,6 +66,19 @@ export default {
     },
     onMore () {
       Toast('更多功能敬请期待')
+    },
+    init () {
+      System.getInterfaceList({ Filter: this.Filter }).then(res => {
+        console.log(res)
+        if (res.retCode === '0') {
+          console.log('0')
+        } else {
+          console.log('1')
+        }
+      }).catch(err => {
+        Toast.fail(err)
+        console.log(err)
+      })
     }
   }
 }
@@ -57,6 +87,9 @@ export default {
 .home {
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .logo {
   margin-top: 150px;

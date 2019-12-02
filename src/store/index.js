@@ -14,6 +14,9 @@ export default new Vuex.Store({
     },
     addItem (state, value) {
       state.lists.push(value)
+    },
+    delItem (state, index) {
+      state.lists.splice(index, 1)
     }
   },
   actions: {

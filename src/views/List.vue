@@ -86,10 +86,14 @@ export default {
       Dialog.confirm({
         message: '确定删除吗？'
       }).then(() => {
-        console.log('1111', index)
+        this.del(index)
       }).catch(() => {
         console.log('2222', index)
       })
+    },
+    del (index) {
+      console.log('1111', index)
+      store.commit('delItem', index)
     }
   }
 }
@@ -111,9 +115,11 @@ export default {
   bottom: 10px;
 }
 .bg {
-  flex-flow: column;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-items: center;
+  width: 100%;
   margin-top: 100px;
 }
 .bgImg {

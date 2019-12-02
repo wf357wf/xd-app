@@ -1,9 +1,9 @@
 <template>
-  <div id="lucky">
-    <van-nav-bar title="幸运转盘"
-                 left-text="返回"
+  <div id='lucky'>
+    <van-nav-bar title='幸运转盘'
+                 left-text='返回'
                  left-arrow
-                 @click-left="onClickLeft" />
+                 @click-left='onClickLeft' />
     <lucky-wheel :msg=1></lucky-wheel>
   </div>
 </template>
