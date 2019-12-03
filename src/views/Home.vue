@@ -1,58 +1,51 @@
 <template>
   <div class="home">
-    <img class="logo"
-         src="../assets/logo.png">
-    <div class="menuBox">
-      <div class="menu">
-        <van-divider :style="{ color: '#42b983', borderColor: '#42b983', padding: '0 16px' }">薪动平台</van-divider>
-        <van-row type="flex"
-                 justify="space-around">
-          <van-col span="6"
-                   @click="onList()">
-            <div class="btn-item">
-              <img src="../assets/img/icon-2.png"
-                   class="icon">
-              <p class="text-item">代理分销</p>
-            </div>
-          </van-col>
-          <van-col span="6"
-                   @click="onLucky()">
-            <div class="btn-item">
-              <img src="../assets/img/icon-3.png"
-                   class="icon">
-              <p class="text-item">幸运转盘</p>
-            </div>
-          </van-col>
-          <van-col span="6"
-                   @click="onMore()">
-            <div class="btn-item">
-              <img src="../assets/img/icon-1.png"
-                   class="icon">
-              <p class="text-item">敬请期待</p>
-            </div>
-          </van-col>
-        </van-row>
-      </div>
-    </div>
+    <van-nav-bar title="薪动平台"
+                 left-text="返回"
+                 left-arrow
+                 @click-left="onClickLeft" />
+    <van-cell-group style="margin-top:10px">
+      <van-cell is-link
+                @click="onList()">
+        <template slot="title">
+          <div class="item">
+            <img src="../assets/img/icon-2.png"
+                 class="icon">
+            <span class="custom-title">代理分销</span>
+          </div>
+        </template>
+      </van-cell>
+      <van-cell is-link
+                @click="onLucky()">
+        <template slot="title">
+          <div class="item">
+            <img src="../assets/img/icon-3.png"
+                 class="icon">
+            <span class="custom-title">幸运转盘</span>
+          </div>
+        </template>
+      </van-cell>
+    </van-cell-group>
   </div>
 </template>
 
 <script>
-import { Button, Toast, Row, Col, Divider } from 'vant'
-import System from '../server/system'
+import { NavBar, Cell, CellGroup } from 'vant'
+import System from '../service/system'
 export default {
   name: 'home',
   components: {
-    [Button.name]: Button,
-    [Toast.name]: Toast,
-    [Row.name]: Row,
-    [Col.name]: Col,
-    [Divider.name]: Divider
+    [NavBar.name]: NavBar,
+    [Cell.name]: Cell,
+    [CellGroup.name]: CellGroup
   },
   data () {
     return {
       Filter: {}
     }
+  },
+  beforeCreate () {
+    document.querySelector('body').setAttribute('style', 'background:#f7f7f7')
   },
   created () {
     this.init()
@@ -64,19 +57,19 @@ export default {
     onLucky () {
       this.$router.push('/Lucky')
     },
-    onMore () {
-      Toast('更多功能敬请期待')
+    onClickLeft () {
+      Toast('返回')
+      this.$router.go(-1)
     },
     init () {
       System.getInterfaceList({ Filter: this.Filter }).then(res => {
-        console.log(res)
+        console.log('666', res)
         if (res.retCode === '0') {
           console.log('0')
         } else {
           console.log('1')
         }
       }).catch(err => {
-        Toast.fail(err)
         console.log(err)
       })
     }
@@ -85,42 +78,16 @@ export default {
 </script>
 <style scoped>
 .home {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.logo {
-  margin-top: 150px;
-}
-.menuBox {
-  width: 100%;
-  height: 200px;
-  position: absolute;
-  bottom: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.menu {
-  width: 80%;
-  height: 150px;
-  background-color: #e6fff4;
-  border-radius: 10px;
+  background-color: #f7f7f7;
 }
 .icon {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
 }
-.btn-item {
+.item {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
   align-items: center;
-}
-.text-item {
-  font-size: 12px;
-  color: #000;
 }
 </style>

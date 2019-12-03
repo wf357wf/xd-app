@@ -1,27 +1,35 @@
 /**
  * @author wf
- * @date 2018/11/30
+ * @date 2019/11/30
  */
 import { call } from '../utils/call'
 export default class System {
-  static getInterfaceList = ({ Filter }) => {
+  static getInterfaceList = ({ page, limit }) => {
+    return call({
+      method: 'GET',
+      url: `/ReleAgAcctUri/getReleAgAcctList`,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      params: {
+        page: 1,
+        limit: 1,
+        agNo: '123456'
+      }
+    })
+  }
+  static addInterfaceList = ({ Filter }) => {
     return new Promise((resolve, reject) => {
       resolve(call({
-        method: 'GET',
-        url: `/AppAgTempUri/getAppAgTempList`,
+        method: 'PUT',
+        url: `/ReleAgAcctUri/addReleAgAcct`,
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json;charset=utf-8'
         },
         data: {
-          reqheader: {
-            SERVICECODE: 'getAppAgTempList'
-          },
-          reqbody:
-          {
-            page: 1,
-            limit: 100
-          }
+          Filter
         }
       }).then(res => {
         return Promise.resolve(res.data.rspbody)

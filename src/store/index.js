@@ -9,8 +9,8 @@ export default new Vuex.Store({
     lists: []
   },
   mutations: {
-    increase () {
-      this.state.count++
+    increase (state, value) {
+      state.lists = value
     },
     addItem (state, value) {
       state.lists.push(value)

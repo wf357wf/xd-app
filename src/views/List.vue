@@ -4,8 +4,8 @@
                  left-text="返回"
                  left-arrow
                  @click-left="onClickLeft" />
-    <div v-if="pageLists.length > 0">
-      <van-swipe-cell class="swipe"
+    <div v-if="pageLists">
+      <!-- <van-swipe-cell class="swipe"
                       v-for="(item, index) in pageLists"
                       :key="index">
         <van-cell>
@@ -14,7 +14,7 @@
               <span>户名 ：</span>
               <span>{{item.userName}}</span>
             </div>
-            <div>
+            <div style="margin-left:10px">
               <span>卡号 ：</span>
               <span>{{item.cardNum}}</span>
             </div>
@@ -27,7 +27,29 @@
                       class="delBtn"
                       @click="plotClick(item,index)" />
         </template>
-      </van-swipe-cell>
+      </van-swipe-cell> -->
+      <van-cell-group>
+        <van-cell v-for="(item, index) in pageLists"
+                  :key="index">
+          <div class="flex-content">
+            <div class="flex-content">
+              <div style="width:6rem">
+                <span>户名 ：</span>
+                <span>{{item.userName}}</span>
+              </div>
+              <div style="margin-left:10px">
+                <span>卡号 ：</span>
+                <span>{{item.cardNum}}</span>
+              </div>
+            </div>
+            <div>
+              <van-icon name="delete"
+                        color="red"
+                        @click="plotClick(item,index)" />
+            </div>
+          </div>
+        </van-cell>
+      </van-cell-group>
     </div>
     <div v-else
          class="bg">
@@ -38,25 +60,24 @@
     <div class="btn-bottom">
       <van-button type="primary"
                   size="large"
+                  color="#DD4D4F"
                   @click="add()">关联新账户</van-button>
     </div>
   </div>
 </template>
 <script>
 import store from '@/store'
-import { Button, SwipeCell, Cell, CellGroup, Icon, Dialog, NavBar, Toast, Image } from 'vant'
+import { Button, Cell, CellGroup, Icon, Dialog, NavBar, Toast, Image } from 'vant'
 export default {
   name: 'list',
   store,
   components: {
     [Button.name]: Button,
-    [SwipeCell.name]: SwipeCell,
     [Cell.name]: Cell,
     [CellGroup.name]: CellGroup,
     [Icon.name]: Icon,
     [Dialog.name]: Dialog,
     [NavBar.name]: NavBar,
-    [Toast.name]: Toast,
     [Image.name]: Image
   },
   computed: {
@@ -66,9 +87,9 @@ export default {
   },
   data () {
     return {
-      msg: store.state.count,
-      value: 3,
-      checked: true
+      list: [],
+      loading: false,
+      finished: false
     }
   },
   methods: {
@@ -82,7 +103,6 @@ export default {
       this.$router.go(-1)
     },
     plotClick (item, index) {
-      console.log(item)
       Dialog.confirm({
         message: '确定删除吗？'
       }).then(() => {
@@ -92,22 +112,29 @@ export default {
       })
     },
     del (index) {
-      console.log('1111', index)
       store.commit('delItem', index)
+    },
+    onLoad () {
+      // 异步更新数据
+      this.loading = false
+      this.finished = true
     }
   }
 }
 </script>
 <style scoped>
 .list {
-  background-color: #fff;
+  width: 100%;
+  height: 100%;
 }
 .swipe {
   height: 100%;
 }
-.content {
-  flex-flow: column;
+.flex-content {
+  display: flex;
+  flex-direction: row;
   align-items: center;
+  justify-content: space-between;
 }
 .btn-bottom {
   width: 100%;

@@ -14,7 +14,8 @@ export function call (config) {
   })
   ax.interceptors.request.use(config => {
     Toast.loading({
-      message: '通讯中...',
+      mask: false,
+      message: '加载中...',
       forbidClick: true,
       duration: 0
     })
@@ -31,7 +32,6 @@ export function call (config) {
     return Promise.resolve(response)
   }, error => {
     Toast.clear()
-    Toast.fail('加载超时')
     return Promise.reject(error)
   })
   return ax.request(config)
