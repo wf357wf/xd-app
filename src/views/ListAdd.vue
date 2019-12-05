@@ -19,14 +19,17 @@
                    label="户名"
                    left-icon="contact"
                    placeholder="请输入户名"
-                   @click-right-icon="$toast('question')" />
+                   :error-message=item.errMsgUserName
+                   @blur="_doformpd('userName', item.userName, item)" />
 
         <van-field v-model="item.cardNum"
                    clearable
                    type="number"
                    label="卡号"
                    left-icon="credit-pay"
-                   placeholder="请输入卡号" />
+                   placeholder="请输入卡号"
+                   :error-message=item.errMsgCardNum
+                   @blur="_doformpd('cardNum', item.cardNum, item)" />
       </van-cell-group>
     </div>
     <div class="btn-bottom">
@@ -49,6 +52,8 @@
 import store from '@/store'
 import { Button, Icon, Dialog, NavBar, Toast, Field, CellGroup, Cell } from 'vant'
 import System from '../service/system'
+import checkBank from '../utils/checkBank'
+import checkChineseName from '../utils/checkChineseName'
 export default {
   name: 'listadd',
   store,
@@ -66,39 +71,58 @@ export default {
     return {
       lists: [{
         userName: "",
-        cardNum: ''
+        cardNum: '',
+        errMsgCardNum: '',
+        errMsgUserName: ''
       }],
-      userName: '',
-      cardNum: '',
       custNo: '815100129661289',
-      custName: '任敏碧'
+      custName: '任敏碧',
+      refObj: this.$route.params.refObj,
     }
   },
   methods: {
     add () {
       let value = {
         userName: "",
-        cardNum: ''
+        cardNum: '',
+        errMsgCardNum: '',
+        errMsgUserName: ''
       }
-      this.lists.push(value)
+      this._checkUN()
+      this._checkCN()
+      if (this._checkUN() && this._checkCN()) { //校验列表信息，合法允许增加一条
+        if (this.lists.length > this.refObj) {
+          Toast('以达到绑定上限')
+        } else {
+          this.lists.push(value)
+        }
+      }
     },
     sure () {
-      let Filter = {}
-      Filter.lists = this.lists
-      Filter.custNo = this.custNo
-      Filter.custName = this.custName
-      let jsonStr = JSON.stringify(Filter);
-      console.log(this.lists)
-      console.log(Filter)
-      console.log(jsonStr)
-      this.init(jsonStr)
-      // store.commit('increase', this.lists)
-      // this.$router.go(-1)
+      let that = this
+      let list = this.lists
+      this._checkUN()
+      this._checkCN()
+      if (this._checkUN() && this._checkCN()) { //校验添加列表信息
+        let Filter = {}
+        let newList = []
+        for (let i = 0; i < list.length; i++) { //去除数组多余提示信息
+          let obj = {}
+          obj.userName = list[i].userName
+          obj.cardNum = list[i].cardNum
+          newList.push(obj)
+        }
+        Filter.lists = newList
+        Filter.custNo = that.custNo
+        Filter.custName = that.custName
+        let jsonStr = JSON.stringify(Filter);
+        this.init(jsonStr)
+      }
     },
-    onClickLeft () {
+    onClickLeft () { // 返回上一页
       this.$router.go(-1)
     },
-    plotClick (item, index) {
+    plotClick (item, index) { // 删除提示框
       Dialog.confirm({
         message: '确定删除吗？'
       }).then(() => {
@@ -107,20 +131,68 @@ export default {
         console.log('2222', index)
       })
     },
-    del (index) {
+    del (index) { // 删除
       this.lists.splice(index, 1)
     },
-    init (jsonStr) {
+    init (jsonStr) { // 关联账户通信
       System.addInterfaceList({ Filter: jsonStr }).then(res => {
-        console.log('666', res)
-        if (res.retCode === '0') {
-          console.log('0')
+        if (res.code === 0) {
+          Toast('绑定成功')
+          this.$router.go(-1)
         } else {
-          console.log('1')
+          Toast(res.msg)
         }
       }).catch(err => {
         console.log(err)
       })
+    },
+    _checkUN () { // 验证用户名合法性
+      let list = this.lists
+      let flag = false
+      for (let i = 0; i < list.length; i++) {
+        let [retCodeUN, retMsgUN] = checkChineseName(list[i].userName)
+        if (retCodeUN === '9999') {
+          Toast(retMsgUN)
+          list[i].errMsgUserName = retMsgUN
+          flag = false
+        } else {
+          list[i].errMsgUserName = ''
+          flag = true
+        }
+      }
+      this.lists = list
+      return flag
+    },
+    _checkCN () { // 验证银行卡号合法性
+      let list = this.lists
+      let flag = false
+      for (let i = 0; i < list.length; i++) {
+        let [retCodeCN, retMsgCN] = checkBank(list[i].cardNum)
+        if (retCodeCN === '9999') {
+          Toast(retMsgCN)
+          list[i].errMsgCardNum = retMsgCN
+          flag = false
+        } else {
+          list[i].errMsgCardNum = ''
+          flag = true
+        }
+      }
+      this.lists = list
+      return flag
+    },
+    _doformpd (m, n, i) { // blur事件验证
+      let that = this
+      let list = that.lists
+      if (m === 'userName') {
+        for (let i = 0; i < list.length; i++) {
+          that._checkUN()
+        }
+      }
+      if (m === 'cardNum') {
+        for (let i = 0; i < list.length; i++) {
+          that._checkCN()
+        }
+      }
     }
   }
 }
@@ -131,6 +203,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding-bottom: 100px;
 }
 .btn-bottom {
   width: 100%;

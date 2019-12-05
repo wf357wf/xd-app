@@ -4,7 +4,7 @@
  */
 import { call } from '../utils/call'
 export default class System {
-  static getInterfaceList = ({ page, limit }) => {
+  static getInterfaceList = ({ custNo }) => {
     return call({
       method: 'GET',
       url: `/ReleAgAcctUri/getReleAgAcctList`,
@@ -14,25 +14,23 @@ export default class System {
       },
       params: {
         page: 1,
-        limit: 1,
-        agNo: '123456'
+        limit: 100,
+        agNo: custNo
       }
     })
   }
   static addInterfaceList = ({ Filter }) => {
     return new Promise((resolve, reject) => {
       resolve(call({
-        method: 'PUT',
+        method: 'POST',
         url: `/ReleAgAcctUri/addReleAgAcct`,
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json;charset=utf-8'
         },
-        data: {
-          Filter
-        }
+        data: Filter
       }).then(res => {
-        return Promise.resolve(res.data.rspbody)
+        return Promise.resolve(res.data)
       }).catch(err => {
         console.log(err)
         return Promise.resolve({
@@ -41,6 +39,20 @@ export default class System {
           'data': 'first_login:1'
         })
       }))
+    })
+  }
+  static delInterfaceList = ({ Filter }) => {
+    return call({
+      method: 'DELETE',
+      url: `/ReleAgAcctUri/delReleAgAcct`,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      params: {
+        custNo: Filter.custNo,
+        cardNum: Filter.cardNum
+      }
     })
   }
 }

@@ -35,11 +35,11 @@
             <div class="flex-content">
               <div style="width:6rem">
                 <span>户名 ：</span>
-                <span>{{item.userName}}</span>
+                <span>{{item.releAgName}}</span>
               </div>
               <div style="margin-left:10px">
                 <span>卡号 ：</span>
-                <span>{{item.cardNum}}</span>
+                <span>{{item.releAgNo}}</span>
               </div>
             </div>
             <div>
@@ -68,6 +68,7 @@
 <script>
 import store from '@/store'
 import { Button, Cell, CellGroup, Icon, Dialog, NavBar, Toast, Image } from 'vant'
+import System from '../service/system'
 export default {
   name: 'list',
   store,
@@ -80,44 +81,69 @@ export default {
     [NavBar.name]: NavBar,
     [Image.name]: Image
   },
-  computed: {
-    pageLists () {
-      return store.state.lists
-    }
+  created () {
+    this.init()
   },
   data () {
     return {
-      list: [],
-      loading: false,
-      finished: false
+      pageLists: [],
+      custNo: 815100129661289,
+      refObj: null
     }
   },
   methods: {
     add () {
       console.log('add')
-      this.$router.push('/ListAdd')
+      this.$router.push({
+        name: 'listadd',
+        params: {
+          refObj: this.refObj
+        }
+      })
       store.commit('increase')
     },
     onClickLeft () {
-      Toast('返回')
       this.$router.go(-1)
     },
     plotClick (item, index) {
       Dialog.confirm({
         message: '确定删除吗？'
       }).then(() => {
-        this.del(index)
+        this.del(item)
       }).catch(() => {
         console.log('2222', index)
       })
     },
-    del (index) {
-      store.commit('delItem', index)
+    del (item) {
+      // store.commit('delItem', index)
+      console.log('dfasf', item)
+      let Filter = {}
+      Filter.custNo = item.custNo
+      Filter.cardNum = item.releAgNo
+      System.delInterfaceList({ Filter }).then(res => {
+        console.log('666', res)
+        if (res.data.code === 0) {
+          Toast('删除成功！')
+          this.init()
+        } else {
+          Toast(res.msg)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
-    onLoad () {
-      // 异步更新数据
-      this.loading = false
-      this.finished = true
+    init () {
+      System.getInterfaceList({ custNo: this.custNo }).then(res => {
+        console.log('666', res)
+        if (res.data.code === 0) {
+          this.pageLists = res.data.data
+          this.refObj = res.data.refObj
+        } else {
+          Toast(res.msg)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     }
   }
 }

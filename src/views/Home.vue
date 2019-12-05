@@ -41,14 +41,13 @@ export default {
   },
   data () {
     return {
-      Filter: {}
+      Filter: {
+
+      }
     }
   },
   beforeCreate () {
     document.querySelector('body').setAttribute('style', 'background:#f7f7f7')
-  },
-  created () {
-    this.init()
   },
   methods: {
     onList () {
@@ -60,18 +59,6 @@ export default {
     onClickLeft () {
       Toast('返回')
       this.$router.go(-1)
-    },
-    init () {
-      System.getInterfaceList({ Filter: this.Filter }).then(res => {
-        console.log('666', res)
-        if (res.retCode === '0') {
-          console.log('0')
-        } else {
-          console.log('1')
-        }
-      }).catch(err => {
-        console.log(err)
-      })
     }
   }
 }
