@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import List from '../views/List.vue'
 import ListAdd from '../views/ListAdd.vue'
 import Lucky from '../views/Lucky.vue'
+import Award from '../views/Award.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -26,6 +27,11 @@ const routes = [
     path: '/lucky',
     name: 'lucky',
     component: Lucky
+  },
+  {
+    path: '/award',
+    name: 'award',
+    component: Award
   }
 ]
 

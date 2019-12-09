@@ -4,7 +4,7 @@
                  left-text="返回"
                  left-arrow
                  @click-left="onClickLeft" />
-    <div v-if="pageLists">
+    <div v-if="pageLists.length > 0">
       <!-- <van-swipe-cell class="swipe"
                       v-for="(item, index) in pageLists"
                       :key="index">
@@ -81,12 +81,13 @@ export default {
     [NavBar.name]: NavBar,
     [Image.name]: Image
   },
-  created () {
+  mounted () {
     this.init()
   },
   data () {
     return {
       pageLists: [],
+      pageFlag: true,
       custNo: 815100129661289,
       refObj: null
     }
@@ -144,6 +145,7 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+      console.log(this.pageLists.length)
     }
   }
 }

@@ -25,12 +25,22 @@
           </div>
         </template>
       </van-cell>
+      <van-cell is-link
+                @click="onAward()">
+        <template slot="title">
+          <div class="item">
+            <img src="../assets/img/icon-4.png"
+                 class="icon">
+            <span class="custom-title">我的奖品</span>
+          </div>
+        </template>
+      </van-cell>
     </van-cell-group>
   </div>
 </template>
 
 <script>
-import { NavBar, Cell, CellGroup } from 'vant'
+import { NavBar, Cell, CellGroup, Toast } from 'vant'
 import System from '../service/system'
 export default {
   name: 'home',
@@ -55,6 +65,9 @@ export default {
     },
     onLucky () {
       this.$router.push('/Lucky')
+    },
+    onAward () {
+      this.$router.push('/Award')
     },
     onClickLeft () {
       Toast('返回')

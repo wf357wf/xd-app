@@ -55,4 +55,33 @@ export default class System {
       }
     })
   }
+  static getAwardList = ({ Filter }) => {
+    return call({
+      method: 'GET',
+      url: `/AwardGainInfUri/getAwardBaseI`,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      params: {
+        custNo: Filter.custNo,
+        cardNum: Filter.cardNum
+      }
+    })
+  }
+  static getAwardGainRecordList = ({ custNo }) => {
+    return call({
+      method: 'GET',
+      url: `/AwardGainInfUri/getAwardGainRecordList`,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      params: {
+        page: 1,
+        limit: 100,
+        agNo: custNo
+      }
+    })
+  }
 }
