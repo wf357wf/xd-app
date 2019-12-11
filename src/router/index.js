@@ -5,6 +5,8 @@ import List from '../views/List.vue'
 import ListAdd from '../views/ListAdd.vue'
 import Lucky from '../views/Lucky.vue'
 import Award from '../views/Award.vue'
+import Question from '../views/Question.vue'
+import Test from '../views/Test.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -32,6 +34,16 @@ const routes = [
     path: '/award',
     name: 'award',
     component: Award
+  },
+  {
+    path: '/question',
+    name: 'question',
+    component: Question
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: Test
   }
 ]
 
