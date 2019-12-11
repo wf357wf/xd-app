@@ -253,7 +253,6 @@ body {
   font-family: "PingFang SC", "STHeitiSC-Light", "Helvetica-Light", arial,
     sans-serif, "Droid Sans Fallback";
   font-size: 16px;
-  height: 100%;
   background: #fff;
 }
 

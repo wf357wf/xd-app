@@ -94,7 +94,6 @@ export default {
   },
   methods: {
     add () {
-      console.log('add')
       this.$router.push({
         name: 'listadd',
         params: {
@@ -117,12 +116,10 @@ export default {
     },
     del (item) {
       // store.commit('delItem', index)
-      console.log('dfasf', item)
       let Filter = {}
       Filter.custNo = item.custNo
       Filter.cardNum = item.releAgNo
       System.delInterfaceList({ Filter }).then(res => {
-        console.log('666', res)
         if (res.data.code === 0) {
           Toast('删除成功！')
           this.init()
@@ -135,7 +132,6 @@ export default {
     },
     init () {
       System.getInterfaceList({ custNo: this.custNo }).then(res => {
-        console.log('666', res)
         if (res.data.code === 0) {
           this.pageLists = res.data.data
           this.refObj = res.data.refObj
@@ -145,7 +141,6 @@ export default {
       }).catch(err => {
         console.log(err)
       })
-      console.log(this.pageLists.length)
     }
   }
 }

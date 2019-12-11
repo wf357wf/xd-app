@@ -22,6 +22,8 @@
           </div>
         </div>
       </div>
+      <div class="btn"
+           @click="plotClick()"></div>
       <div class='tip'
            :style="{backgroundImage:'url('+require('../assets/img/screen.png')+')'}">
         <div class='tip-title'>中奖规则</div>
@@ -47,6 +49,22 @@
         </div>
       </div>
     </div>
+    <div class='toast'
+         v-show='toast_control'>
+      <div class='toast-container'>
+        <img :src='toast_pictrue'
+             class='toast-picture' />
+        <div class='close'
+             @click='close_toast()'></div>
+        <div class='toast-title'>{{toast_title}}</div>
+        <div class='toast-btn'>
+          <div class='toast-cancel'
+               @click='close_toast'>关闭</div>
+        </div>
+      </div>
+    </div>
+    <div class='toast-mask'
+         v-show='toast_control'></div>
   </div>
 </template>
 
@@ -68,6 +86,9 @@ export default {
       pageFlag: true,
       custNo: 815100129661289,
       refObj: null,
+      toast_control: false, // 抽奖结果弹出框控制器
+      hasPrize: false, // 是否中奖
+      clickFlag: true, // 是否可以旋转抽奖
       textArr: [
         '一等奖 200元超市代金券',
         '二等奖 100元超市代金券',
@@ -109,6 +130,19 @@ export default {
         id: this.number,
         val: this.textArr[this.number]
       }
+    },
+    toast_title () {
+      return this.hasPrize
+        ? '恭喜您，获得' +
+        this.prize_list[this.index].count +
+        ' ' +
+        this.prize_list[this.index].name
+        : '未中奖'
+    },
+    toast_pictrue () {
+      return this.hasPrize
+        ? require('../assets/img/congratulation.png')
+        : require('../assets/img/sorry.png')
     }
   },
   mounted () {
@@ -122,12 +156,30 @@ export default {
       // eslint-disable-next-line
       let timer = setTimeout(() => {
         if (this.number === 2) {
-          this.number = 0;
+          this.number = 0
         } else {
-          this.number += 1;
+          this.number += 1
         }
-        this.startMove();
-      }, 3000); // 滚动不需要停顿则将2000改成动画持续时间
+        this.startMove()
+      }, 3000) // 滚动不需要停顿则将2000改成动画持续时间
+    },
+    plotClick () {
+      console.log('1111111')
+      if (!this.clickFlag) return
+      var that = this
+      var duringTime = 1 // 默认为1s
+      this.clickFlag = false // 旋转结束前，不允许再次触发
+      setTimeout(function () {
+        that.clickFlag = true
+        that.game_over()
+      }, duringTime * 1000 + 1500) // 延时，保证转盘转完
+    },
+    game_over () {
+      this.toast_control = true
+    },
+    // 关闭弹窗
+    close_toast () {
+      this.toast_control = false
     }
   }
 }
@@ -252,5 +304,93 @@ export default {
 .slide-leave-to {
   transform: translateY(-40px) scale(0.8);
   opacity: 0;
+}
+.btn {
+  width: 70%;
+  height: 3rem;
+  top: 27.8rem;
+  position: absolute;
+  z-index: 9999;
+}
+.toast-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10000;
+  width: 100%;
+  height: 100%;
+}
+.toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 20000;
+  transform: translate(-50%, -50%);
+  width: 15.4375rem;
+  background: #fff;
+  border-radius: 0.3125rem;
+  padding: 0.3125rem;
+  background-color: rgb(252, 244, 224);
+}
+.toast-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 1px dotted #fccc6e;
+}
+.toast-picture {
+  position: absolute;
+  top: -6.5rem;
+  left: -1.5rem;
+  width: 18.75rem;
+  height: 8.5625rem;
+}
+.toast-pictrue-change {
+  position: absolute;
+  top: -1.5rem;
+  left: -1.375rem;
+  width: 17.5rem;
+  height: 3.125rem;
+}
+.toast-title {
+  padding: 2.8125rem 0;
+  font-size: 18px;
+  color: #fc7939;
+  text-align: center;
+}
+.toast-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.9375rem;
+}
+.toast-btn div {
+  background-image: -moz-linear-gradient(
+    -18deg,
+    rgb(242, 148, 85) 0%,
+    rgb(252, 124, 88) 51%,
+    rgb(252, 124, 88) 99%
+  );
+
+  background-image: -ms-linear-gradient(
+    -18deg,
+    rgb(242, 148, 85) 0%,
+    rgb(252, 124, 88) 51%,
+    rgb(252, 124, 88) 99%
+  );
+  background-image: -webkit-linear-gradient(
+    -18deg,
+    rgb(242, 148, 85) 0%,
+    rgb(252, 124, 88) 51%,
+    rgb(252, 124, 88) 99%
+  );
+  box-shadow: 0px 4px 0px 0px rgba(174, 34, 5, 0.7);
+  width: 4.6875rem;
+  height: 1.875rem;
+  border-radius: 1.875rem;
+  text-align: center;
+  line-height: 1.875rem;
+  color: #fff;
 }
 </style>
