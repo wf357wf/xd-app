@@ -49,9 +49,9 @@
                 @click="onTest()">
         <template slot="title">
           <div class="item">
-            <img src="../assets/img/icon-5.png"
+            <img src="../assets/img/icon-6.png"
                  class="icon">
-            <span class="custom-title">测试</span>
+            <span class="custom-title">代发明细</span>
           </div>
         </template>
       </van-cell>

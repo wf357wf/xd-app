@@ -17,5 +17,6 @@ module.exports = {
       }
     }
   },
+  transpileDependencies: [/\bvue-echarts\b/, /\bresize-detector\b/],
   publicPath: ''
 }

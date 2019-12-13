@@ -65,6 +65,13 @@
     </div>
     <div class='toast-mask'
          v-show='toast_control'></div>
+    <div class="loading"
+         v-show='loading_control'>
+      <img src="../assets/img/11111.gif"
+           class="loadingImg">
+    </div>
+    <div class='toast-mask'
+         v-show='loading_control'></div>
   </div>
 </template>
 
@@ -89,6 +96,7 @@ export default {
       toast_control: false, // 抽奖结果弹出框控制器
       hasPrize: false, // 是否中奖
       clickFlag: true, // 是否可以旋转抽奖
+      loading_control: false, // 抽奖过程弹出框控制器
       textArr: [
         '一等奖 200元超市代金券',
         '二等奖 100元超市代金券',
@@ -164,7 +172,7 @@ export default {
       }, 3000) // 滚动不需要停顿则将2000改成动画持续时间
     },
     plotClick () {
-      console.log('1111111')
+      this.loading_control = true
       if (!this.clickFlag) return
       var that = this
       var duringTime = 1 // 默认为1s
@@ -175,6 +183,7 @@ export default {
       }, duringTime * 1000 + 1500) // 延时，保证转盘转完
     },
     game_over () {
+      this.loading_control = false
       this.toast_control = true
     },
     // 关闭弹窗
@@ -392,5 +401,23 @@ export default {
   text-align: center;
   line-height: 1.875rem;
   color: #fff;
+}
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 20000;
+  width: 16rem;
+  height: 10rem;
+  transform: translate(-50%, -50%);
+  background: #ea3344;
+  border-radius: 0.3125rem;
+  padding: 0.3125rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.loadingImg {
+  width: 100%;
 }
 </style>
