@@ -9,15 +9,37 @@
       <div id="myChart"
            :style="{width: '300px', height: '300px'}"></div>
       <div class="title">
-        <p>历史代发记录</p>
-        <van-cell class="dataPicker"
-                  title="日期"
-                  arrow-direction="down"
-                  @click="showPopup"
-                  is-link />
-        <!-- <van-datetime-picker v-model="currentDate"
-                             type="date"
-                             :min-date="minDate" /> -->
+        <van-cell style="background:#f7f7f7"
+                  title="历史代发记录"
+                  @click="showDate"
+                  is-link
+                  :arrow-direction="arrow" />
+        <div class="searchBox"
+             v-show="flag">
+          <div class="dateBox">
+            <van-field class="datePicker"
+                       v-model="currentDate_end"
+                       @click="showPopup('start')"
+                       placeholder="选择开始日期"
+                       input-align="center"
+                       clickable
+                       readonly />
+            <div class="line1"></div>
+            <van-field class="datePicker"
+                       v-model="currentDate_end1"
+                       @click="showPopup('end')"
+                       placeholder="选择截止日期"
+                       input-align="center"
+                       readonly
+                       clickable />
+          </div>
+          <van-button type="primary"
+                      size="small"
+                      color="#c49756"
+                      text="查询"
+                      class="btn"
+                      @click="sure()"></van-button>
+        </div>
       </div>
       <van-list class="list"
                 v-model="loading"
@@ -36,14 +58,16 @@
                class="pop"
                position="bottom">
       <van-datetime-picker v-model="currentDate"
-                           type="date"
-                           :min-date="minDate" />
+                           type="year-month"
+                           :max-date="minDate"
+                           @confirm="dateConfirm()"
+                           @cancel="dateCancel()" />
     </van-popup>
   </div>
 </template>
 <script>
 import store from '@/store'
-import { NavBar, Toast, List, Cell, DatetimePicker, Popup } from 'vant'
+import { NavBar, Toast, List, Cell, DatetimePicker, Popup, Field, Button } from 'vant'
 export default {
   name: 'about',
   store,
@@ -52,26 +76,28 @@ export default {
     [List.name]: List,
     [Cell.name]: Cell,
     [DatetimePicker.name]: DatetimePicker,
-    [Popup.name]: Popup
+    [Popup.name]: Popup,
+    [Field.name]: Field,
+    [Button.name]: Button
   },
   data () {
     return {
-      error: false,
+      flag: false,
+      arrow: '',
+      dateFlag: '',
       loading: false,
       finished: false,
       show: false,
       list: [],
-      end_time: '',
       currentDate_end: '',
+      currentDate_end1: '',
       currentDate: new Date(),
       minDate: new Date(),
       calc: '',
       place: "50,000起存",
       predict: '0.00',
-      xAxis: ["1个月", "3个月", "6个月", "1年", "09月", "本月"],
-      yAxis: [100, 120, 110, 130, 160, 100],
-      yAxis2: [80, 100, 85, 80, 85, 120],
-      yAxis3: [80, 60, 50, 60, 70, 50]
+      xAxis: ["02", "03", "04", "05", "06", "07"],
+      yAxis: [1000, 1200, 1100, 1300, 1600, 1000],
     }
   },
   mounted () {
@@ -102,15 +128,46 @@ export default {
     onClickLeft () {
       this.$router.go(-1)
     },
-    showPopup () {
-      this.show = true;
+    showDate () {
+      this.flag = !this.flag
+      if (this.flag) {
+        this.arrow = 'down'
+      } else {
+        this.arrow = ''
+      }
+    },
+    showPopup (m) {
+      this.dateFlag = m
+      this.show = true
+      console.log(this.dateFlag)
+    },
+    dateConfirm () {
+      if (this.dateFlag === 'start') {
+        this.currentDate_end = this.timeFormat(this.currentDate)
+      }
+      if (this.dateFlag === 'end') {
+        this.currentDate_end1 = this.timeFormat(this.currentDate)
+      }
+      this.show = false;
+    },
+    dateCancel () {
+      this.show = false;
+    },
+    timeFormat (time) { // 时间格式化 2019-09-08
+      let year = time.getFullYear();
+      let month = time.getMonth() + 1;
+      //let day = time.getDate();
+      return year + '年' + month + '月'
+    },
+    sure () {
+      console.log('sure')
     },
     onLoad () {
       // 异步更新数据
       setTimeout(() => {
         for (let i = 0; i < 10; i++) {
           let obj = {}
-          obj.date = '2019-12-12'
+          obj.date = '2019-12'
           obj.money = this.list.length + 1
           this.list.push(obj);
         }
@@ -129,8 +186,8 @@ export default {
       // 绘制图表
       var option = {
         title: {
-          text: "收益对比图",
-          subtext: "收益 (元)",
+          text: "代发明细走势图",
+          subtext: "账单 (元)",
           itemGap: 16,
           textStyle: {
             fontSize: 16,
@@ -144,7 +201,7 @@ export default {
           }
         },
         legend: {
-          data: ['本产品', '定期', '同业'],
+          data: ['收入'],
           align: "right",
           right: 0,
           itemWidth: 18,
@@ -191,12 +248,12 @@ export default {
           splitLine: { show: false }
         },
         series: [
-          {            name: "本产品",
+          {            name: "收入",
             itemStyle: {
               normal: {
-                color: "#5E6790",
+                color: "#c49756",
                 lineStyle: {
-                  color: "#5E6790"
+                  color: "#c49756"
                 }
               }
             },
@@ -213,21 +270,14 @@ export default {
                 show: true,
                 position: ['0', '-200%'], //标注的位置
                 formatter: "{c}元", //标注文字（份数到时候单独返回或返回单价计算皆可）
-                color: '#363636',
+                color: '#c49756',
                 fontSize: '14',
                 fontFamily: 'Helvetica-Bold'
-              },
-              data: [
-                //点的标记的位置
-                {
-                  coord: ['09月', 160.00],
-                  value: '160.00'
-                }
-              ]
+              }
             },
             markLine: {
               //标注线
-              lineStyle: { color: '#d8d8d8' },
+              lineStyle: { color: '#c49756' },
               symbol: "none", //不要箭头
               label: {
                 //不要标注
@@ -235,102 +285,6 @@ export default {
               },
               data: [
                 { xAxis: "08月" } //看点的位置停留在哪 该值指向哪
-              ]
-            }
-          },
-          {
-            name: "同业",
-            itemStyle: {
-              normal: {
-                color: "#FD4367",
-                lineStyle: {
-                  color: "#FD4367"
-                }
-              }
-            },
-            data: this.yAxis2,
-            type: "line",
-            smooth: true,
-            symbolSize: '3',
-            symbol: 'none',
-            markPoint: {
-              symbol: "circle", //点的样式
-              symbolSize: 12, //点的大小
-              label: {
-                //点的标注
-                show: false,
-                position: ['0', '-200%'], //标注的位置
-                formatter: "{c}元", //标注文字（份数到时候单独返回或返回单价计算皆可）
-                color: '#363636',
-                fontSize: '14',
-                fontFamily: 'Helvetica-Bold'
-              },
-              data: [
-                //点的标记的位置
-                {
-                  coord: ['09月', 85],
-                  value: '85.00'
-                }
-              ]
-            },
-            markLine: {
-              //标注线
-              lineStyle: { color: '#d8d8d8' },
-              symbol: "none", //不要箭头
-              label: {
-                //不要标注
-                show: false
-              },
-              data: [
-                { xAxis: "09月" } //看点的位置停留在哪 该值指向哪
-              ]
-            }
-          },
-          {
-            name: "定期",
-            itemStyle: {
-              normal: {
-                color: "#C49756",
-                lineStyle: {
-                  color: "#C49756"
-                }
-              }
-            },
-            data: this.yAxis3,
-            type: "line",
-            smooth: true,
-            symbolSize: '3',
-            symbol: 'none',
-            markPoint: {
-              symbol: "circle", //点的样式
-              symbolSize: 12, //点的大小
-              label: {
-                //点的标注
-                show: false,
-                position: ['0', '-200%'], //标注的位置
-                formatter: "{c}元", //标注文字（份数到时候单独返回或返回单价计算皆可）
-                color: '#363636',
-                fontSize: '14',
-                fontFamily: 'Helvetica-Bold'
-              },
-              data: [
-                //点的标记的位置
-                {
-                  coord: ['09月', 70],
-                  value: '70.00'
-                }
-              ]
-            },
-            markLine: {
-              //标注线
-              lineStyle: { color: '#d8d8d8' },
-              symbol: "none", //不要箭头
-              label: {
-                //不要标注
-                show: false
-              },
-              data: [
-                { xAxis: "09月" } //看点的位置停留在哪 该值指向哪
               ]
             }
           }
@@ -357,9 +311,13 @@ export default {
   height: 0.5rem;
   background-color: #eee;
 }
+.line1 {
+  width: 10px;
+  height: 1px;
+  background-color: #c49756;
+}
 .title {
   width: 100%;
-  height: 4rem;
   margin-top: 2rem;
   display: flex;
   flex-direction: column;
@@ -369,14 +327,32 @@ export default {
   font-size: 14px;
   margin-left: 0.5rem;
 }
-.dataPicker {
-  background-color: #f8f8f8;
-  height: 2rem;
+.searchBox {
+  background-color: #f7f7f7;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.5rem;
+}
+.dateBox {
+  background-color: #f7f7f7;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 0.5rem;
+}
+.datePicker {
+  border: 1px solid #c49756;
+  border-radius: 5px;
+  width: 40%;
+  height: 2rem;
+  padding: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .list {
-  width: 94%;
+  width: 92%;
 }
 .listItem {
   width: 100%;
@@ -396,5 +372,8 @@ export default {
 }
 .pop {
   width: 100%;
+}
+.btn {
+  margin-right: 0.5rem;
 }
 </style>
