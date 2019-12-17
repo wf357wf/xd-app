@@ -60,60 +60,60 @@
 </template>
 
 <script>
-import { NavBar, Cell, CellGroup, Toast } from 'vant'
-import System from '../service/system'
-export default {
-  name: 'home',
-  components: {
-    [NavBar.name]: NavBar,
-    [Cell.name]: Cell,
-    [CellGroup.name]: CellGroup
-  },
-  data () {
-    return {
-      Filter: {
+  import { NavBar, Cell, CellGroup, Toast } from 'vant'
+  import System from '../service/system'
+  export default {
+    name: 'home',
+    components: {
+      [NavBar.name]: NavBar,
+      [Cell.name]: Cell,
+      [CellGroup.name]: CellGroup
+    },
+    data () {
+      return {
+        Filter: {
 
+        }
+      }
+    },
+    beforeCreate () {
+      document.querySelector('body').setAttribute('style', 'background:#f7f7f7')
+    },
+    methods: {
+      onList () {
+        this.$router.push('/List')
+      },
+      onLucky () {
+        this.$router.push('/Lucky')
+      },
+      onAward () {
+        this.$router.push('/Award')
+      },
+      onQuestion () {
+        this.$router.push('/QuestionList')
+      },
+      onTest () {
+        this.$router.push('/Test')
+      },
+      onClickLeft () {
+        Toast('返回')
+        this.$router.go(-1)
       }
     }
-  },
-  beforeCreate () {
-    document.querySelector('body').setAttribute('style', 'background:#f7f7f7')
-  },
-  methods: {
-    onList () {
-      this.$router.push('/List')
-    },
-    onLucky () {
-      this.$router.push('/Lucky')
-    },
-    onAward () {
-      this.$router.push('/Award')
-    },
-    onQuestion () {
-      this.$router.push('/Question')
-    },
-    onTest () {
-      this.$router.push('/Test')
-    },
-    onClickLeft () {
-      Toast('返回')
-      this.$router.go(-1)
-    }
   }
-}
 </script>
 <style scoped>
-.home {
-  background-color: #f7f7f7;
-}
-.icon {
-  width: 24px;
-  height: 24px;
-  margin-right: 10px;
-}
-.item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
+  .home {
+    background-color: #f7f7f7;
+  }
+  .icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+  }
+  .item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
 </style>
