@@ -3,6 +3,7 @@
  * @date 2019/11/30
  */
 import { call } from '../utils/call'
+
 export default class System {
   static getInterfaceList = ({ custNo }) => {
     return call({
@@ -82,6 +83,39 @@ export default class System {
         limit: 100,
         agNo: custNo
       }
+    })
+  }
+  static getQuestionList = () => {
+    return call({
+      method: 'GET',
+      url: `/QuestionInfoUri/getQuestionInfoList`,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      params: {}
+    })
+  }
+  static addQuestion = ({ Filter }) => {
+    return new Promise((resolve, reject) => {
+      resolve(call({
+        method: 'POST',
+        url: `/QuestionInfoUri/addQuestion`,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json;charset=utf-8'
+        },
+        data: Filter
+      }).then(res => {
+        return Promise.resolve(res.data)
+      }).catch(err => {
+        console.log(err)
+        return Promise.resolve({
+          'retCode': '1',
+          'retMsg': '网络异常',
+          'data': 'first_login:1'
+        })
+      }))
     })
   }
 }
